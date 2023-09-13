@@ -2,18 +2,22 @@ from datetime import datetime
 from typing import List
 
 from pydantic import BaseModel
+
 from src.auth.schemas import UserSchema
+from src.tasks.schemas import TaskSchema
 
 
-class TaskSchema(BaseModel):
-    """Схема модели задач."""
+class AssignTaskSchema(BaseModel):
+    """Схема модели постановки задач."""
 
     id: int
-    title: str
-    description: str
-    created_on: datetime
-    updated_on: datetime
-    owner: UserSchema
+    start_datetime: datetime
+    end_datetime: datetime
+    execution_datetime: datetime
+    execution_status: bool
+    appointed: UserSchema
+    executor: UserSchema
+    task: TaskSchema
 
 
 class AssignTaskCreateSchema(BaseModel):
@@ -21,12 +25,4 @@ class AssignTaskCreateSchema(BaseModel):
 
     users_id: List[int]
     task_id: int
-    end_date: datetime
-
-
-class TaskUpdateSchema(BaseModel):
-    """Схема обновление задачи."""
-
-    id: int
-    title: str
-    description: str
+    end_datetime: datetime

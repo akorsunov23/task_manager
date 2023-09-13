@@ -21,6 +21,8 @@ class Task(Base):
 
     # Связь с таблицей пользователя
     owner = relationship("User", back_populates="task", lazy="selectin")
+    # Связь с таблицей постановки задачи
+    task_user = relationship("TaskUser", back_populates="task", lazy="selectin")
 
     def __repr__(self) -> str:
         return f"Task {self.id}: owner by - {self.owner}"

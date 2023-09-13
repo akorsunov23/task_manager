@@ -7,9 +7,9 @@ class TaskService:
     def __init__(self, task_repo: TaskRepository):
         self._task_repo: TaskRepository = task_repo()
 
-    async def get_all_task(self):
+    async def get_all_task(self, data: dict):
         """Получение всех задач."""
-        tasks = await self._task_repo.find_all()
+        tasks = await self._task_repo.find_all(data=data)
         return tasks
 
     async def get_one_task(self, data: dict):

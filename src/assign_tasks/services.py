@@ -1,4 +1,7 @@
+from src.assign_tasks.models import TaskUser
 from src.assign_tasks.repository import AssignTaskRepository
+from src.assign_tasks.schemas import AssignTaskCreateSchema
+from src.auth.models import User
 
 
 class AssignTaskService:
@@ -31,3 +34,17 @@ class AssignTaskService:
     async def update_task(self, obj, data: dict):
         """Обновление задачи"""
         await self._task_repo.update_one(obj=obj, data=data)
+
+    async def create_all(self, user: User, data: AssignTaskCreateSchema):
+        """Массовое добавление объектов."""
+        objects: list = []
+        for user_id in data.users_id:
+            objects.append(
+                TaskUser(
+                    end_datetime=data.end_datetime.date(),
+                    appointed_id=user.id,
+                    executor_id=user_id,
+                    task_id=data.task_id
+                )
+            )
+        await self._task_repo.create_all(objects=objects)

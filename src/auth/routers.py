@@ -12,7 +12,7 @@ fastapi_users = FastAPIUsers[User, int](
     get_user_manager,
     [auth_backend],
 )
-current_superuser = fastapi_users.current_user(active=True, superuser=True)
+current_user = fastapi_users.current_user(active=True)
 
 auth_app.include_router(
     fastapi_users.get_auth_router(auth_backend),

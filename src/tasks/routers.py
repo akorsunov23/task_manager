@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.exc import IntegrityError
 
 from src.auth.models import User
-from src.auth.routers import current_superuser
+from src.auth.routers import current_user
 from src.tasks import schemas
 from src.tasks.dependencies import task_service
 from src.tasks.services import TaskService
@@ -16,13 +16,13 @@ task_app = APIRouter(prefix="/task", tags=["CRUD Task"])
 async def create_task(
     data: schemas.TaskCreateSchema,
     task_serv: Annotated[TaskService, Depends(task_service)],
-    user: User = Depends(current_superuser),
+    user: User = Depends(current_user),
 ) -> dict:
     """
     Добавление задачи в БД.
     :param data: Схема добавления задачи.
     :param task_serv: Сервис для работы с задачами.
-    :param user: Текущий пользователь, должен быть is_superuser=True.
+    :param user: Текущий пользователь.
     """
 
     try:
@@ -44,31 +44,42 @@ async def create_task(
 async def read_task_one(
     task_id: int,
     task_serv: Annotated[TaskService, Depends(task_service)],
-    user: User = Depends(current_superuser),
+    user: User = Depends(current_user),
 ) -> schemas.TaskSchema:
     """
     Чтение одной задачи.
-    :param task_id: ID задачи
+    :param task_id: ID задачи.
     :param task_serv: Сервис для работы с задачами.
-    :param user: Текущий пользователь, должен быть is_superuser=True.
+    :param user: Текущий пользователь.
     """
 
-    task = await task_serv.get_one_task(data={"id": task_id})
-    return task.to_read_model()
+    task = await task_serv.get_one_task(
+        data={
+            "id": task_id,
+            "owner_id": user.id,
+        }
+    )
+    if task:
+        return task.to_read_model()
+    raise HTTPException(status_code=404, detail="Задачи не существует")
 
 
 @task_app.get("/read_all")
 async def read_tasks_all(
     task_serv: Annotated[TaskService, Depends(task_service)],
-    user: User = Depends(current_superuser),
+    user: User = Depends(current_user),
 ) -> List[schemas.TaskSchema]:
     """
     Чтение всех доступных задач.
     :param task_serv: Сервис для работы с задачами.
-    :param user: Текущий пользователь, должен быть is_superuser=True.
+    :param user: Текущий пользователь.
     """
 
-    tasks = await task_serv.get_all_task()
+    tasks = await task_serv.get_all_task(
+        data={
+            "owner_id": user.id
+        }
+    )
     return tasks
 
 
@@ -76,16 +87,21 @@ async def read_tasks_all(
 async def update_task(
     data: schemas.TaskUpdateSchema,
     task_serv: Annotated[TaskService, Depends(task_service)],
-    user: User = Depends(current_superuser),
+    user: User = Depends(current_user),
 ) -> dict:
     """
     Обновление задачи.
     :param data: Данные для обновления задачи.
     :param task_serv: Сервис для работы с задачами.
-    :param user: Текущий пользователь, должен быть is_superuser=True.
+    :param user: Текущий пользователь.
     """
 
-    task = await task_serv.get_one_task(data={"id": data.id})
+    task = await task_serv.get_one_task(
+        data={
+            "id": data.id,
+            "owner_id": user.id,
+        }
+    )
     if task:
         try:
             await task_serv.update_task(
@@ -108,16 +124,21 @@ async def update_task(
 async def delete_task(
     task_id: int,
     task_serv: Annotated[TaskService, Depends(task_service)],
-    user: User = Depends(current_superuser),
+    user: User = Depends(current_user),
 ) -> dict:
 
     """
     Удаление задачи.
     :param task_id: ID задачи для удаления.
     :param task_serv: Сервис для работы с задачами.
-    :param user: Текущий пользователь, должен быть is_superuser=True.
+    :param user: Текущий пользователь.
     """
-    task = await task_serv.get_one_task(data={"id": task_id})
+    task = await task_serv.get_one_task(
+        data={
+            "id": task_id,
+            "owner_id": user.id,
+        }
+    )
     if task:
         await task_serv.delete_task(
             obj=task,

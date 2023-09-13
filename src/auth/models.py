@@ -7,6 +7,7 @@ from sqlalchemy.orm import relationship
 from src.core.database import Base
 from src.auth.schemas import UserSchema, UserTypeEnum
 from src.tasks.models import Task
+from src.assign_tasks.models import TaskUser
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):
@@ -31,6 +32,17 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     task = relationship(
         Task,
         back_populates="owner",
+        cascade="all, delete-orphan",
+    )
+    # Связь с таблицей назначения задач
+    appointed_task = relationship(
+        TaskUser,
+        foreign_keys="TaskUser.appointed_id",
+        cascade="all, delete-orphan",
+    )
+    executor_task = relationship(
+        TaskUser,
+        foreign_keys="TaskUser.executor_id",
         cascade="all, delete-orphan",
     )
 
