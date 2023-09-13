@@ -2,9 +2,11 @@ from datetime import datetime
 
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Enum
+from sqlalchemy.orm import relationship
 
 from src.core.database import Base
-from .schemas import UserSchema, UserTypeEnum
+from src.auth.schemas import UserSchema, UserTypeEnum
+from src.manager.models import Task
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):
@@ -23,10 +25,10 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     is_verified = Column(Boolean, default=False, nullable=False)
     user_type = Column(Enum(UserTypeEnum), nullable=False)
 
-    # Связь с таблицей приватных шаблонов
-    # private_templates = relationship(
-    #     PrivateTemplate, back_populates='owner', cascade='all, delete-orphan',
-    # )
+    # Связь с таблицей задач
+    task = relationship(
+        Task, back_populates='owner', cascade='all, delete-orphan',
+    )
 
     def __repr__(self) -> str:
         return f'User {self.id}: {self.username}'
