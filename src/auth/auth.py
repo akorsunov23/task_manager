@@ -6,7 +6,7 @@ cookie_transport = CookieTransport(cookie_max_age=3600)
 
 
 def get_jwt_strategy() -> JWTStrategy:
-    """Кодирование токена."""
+    """Кодирование токена. Хранение токена настроена на 1 час. (3600)"""
     return JWTStrategy(secret=AUTH_JWT_STRATEGY_SECRET, lifetime_seconds=3600)
 
 

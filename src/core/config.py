@@ -1,3 +1,5 @@
+"""Получение данных их переменных окружения. """
+
 import os
 from pathlib import Path
 
