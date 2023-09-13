@@ -26,6 +26,10 @@ class AbstractRepository(ABC):
     async def delete_one(self, obj):
         raise NotImplementedError
 
+    @abstractmethod
+    async def create_all(self, objects: list):
+        raise NotImplementedError
+
 
 class SQLAlchemyRepository(AbstractRepository):
     """Базовый класс для работы с БД."""
@@ -92,4 +96,13 @@ class SQLAlchemyRepository(AbstractRepository):
         """
         async with async_session_maker() as session:
             await session.delete(obj)
+            await session.commit()
+
+    async def create_all(self, objects: list):
+        """
+        Массовое добавление объектов.
+        :param objects: Список объектов
+        """
+        async with async_session_maker() as session:
+            session.add_all(objects)
             await session.commit()
