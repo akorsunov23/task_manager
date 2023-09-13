@@ -11,14 +11,16 @@ from src.manager.models import Task
 
 class User(SQLAlchemyBaseUserTable[int], Base):
     """Модель пользователя."""
-    __tablename__ = 'user'
+
+    __tablename__ = "user"
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     username = Column(String, unique=False, nullable=False)
     email = Column(String(320), unique=True, index=True, nullable=False)
     created_on = Column(DateTime, default=datetime.utcnow)
-    updated_on = Column(DateTime, default=datetime.utcnow,
-                        onupdate=datetime.utcnow)
+    updated_on = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
     hashed_password = Column(String(1024), nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     is_superuser = Column(Boolean, default=False, nullable=False)
@@ -27,16 +29,18 @@ class User(SQLAlchemyBaseUserTable[int], Base):
 
     # Связь с таблицей задач
     task = relationship(
-        Task, back_populates='owner', cascade='all, delete-orphan',
+        Task,
+        back_populates="owner",
+        cascade="all, delete-orphan",
     )
 
     def __repr__(self) -> str:
-        return f'User {self.id}: {self.username}'
+        return f"User {self.id}: {self.username}"
 
     def to_read_model(self):
         return UserSchema(
             id=self.id,
             email=self.email,
             username=self.username,
-            user_type=self.user_type
+            user_type=self.user_type,
         )

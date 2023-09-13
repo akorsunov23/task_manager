@@ -7,5 +7,5 @@ from src.core.database import get_async_session
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
-	"""Получение текущего пользователя."""
-	yield SQLAlchemyUserDatabase(session, User)
+    """Получение текущего пользователя."""
+    yield SQLAlchemyUserDatabase(session, User)

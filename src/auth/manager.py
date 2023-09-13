@@ -1,7 +1,13 @@
 from typing import Optional
 
 from fastapi import Depends, Request
-from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions, schemas, models
+from fastapi_users import (
+    BaseUserManager,
+    IntegerIDMixin,
+    exceptions,
+    schemas,
+    models
+)
 
 from src.auth.models import User
 from src.auth.schemas import UserTypeEnum
@@ -23,8 +29,10 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         Добавление пользователя в БД.
 
         :param user_create: Схема добавления пользователя.
-        :param safe: Если True, конфиденциальные значения, такие как is_superuser или is_verified,
-        будет игнорироваться во время создания, по умолчанию установлено значение False.
+        :param safe: Если True, конфиденциальные значения,
+        такие как is_superuser или is_verified,
+        будет игнорироваться во время создания,
+        по умолчанию установлено значение False.
         :param request: Дополнительный запрос FastAPI, который
          запустил операцию, по умолчанию — None.
         :raises UserAlreadyExists: Если пользователь уже существует.
