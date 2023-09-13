@@ -1,17 +1,15 @@
-import email.mime.application
-import os
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from src.celery_tasks.tasks import send_email
+from fastapi import HTTPException
 
 from src.assign_tasks.models import TaskUser
 from src.assign_tasks.repository import AssignTaskRepository
 from src.assign_tasks.schemas import AssignTaskCreateSchema
 from src.auth.models import User
+from src.celery_tasks.tasks import send_email
 from src.core import config
-from src.tasks.models import Task
 
 
 class AssignTaskService:
@@ -20,7 +18,7 @@ class AssignTaskService:
     def __init__(self, task_repo: AssignTaskRepository):
         self._task_repo: AssignTaskRepository = task_repo()
 
-    async def create_all(self, user: User, data: AssignTaskCreateSchema):
+    async def create_all(self, user: User, data: AssignTaskCreateSchema) -> None:
         """Массовое добавление объектов."""
         objects: list = []
         for user_id in data.users_id:
@@ -34,6 +32,33 @@ class AssignTaskService:
             )
         await self._task_repo.create_all(objects=objects)
 
+    async def get_tasks_all(self, data: dict) -> list:
+        """Получение всех задач."""
+        return await self._task_repo.find_all(data=data)
+
+    async def get_task_one(self, data: dict):
+        """Получение объекта назначенной задачи."""
+        return await self._task_repo.get_one(data=data)
+
+    async def update_assign_task(self, assign_task_id: int, user_id: int):
+        """Обновление записи назначения задачи."""
+        obj = await self.get_task_one(
+            data={
+                'id': assign_task_id,
+                'executor_id': user_id
+            }
+        )
+        if obj:
+            data = {
+                'execution_status': True,
+                'execution_datetime': datetime.utcnow()
+            }
+            return await self._task_repo.update_one(obj=obj, data=data)
+        raise HTTPException(
+            status_code=404,
+            detail="Задача не найдена."
+        )
+
 
 class SendEmailService:
     """Сервис отправки сообщений."""
@@ -41,7 +66,7 @@ class SendEmailService:
         self._user = config.SMTP_USERNAME
 
     async def _message_generation(self, subject, msg):
-        # формирование сообщение администратору
+        """Формирование сообщения. """
         message = MIMEMultipart()
         message['Subject'] = subject
         message['From'] = self._user
@@ -50,23 +75,30 @@ class SendEmailService:
 
         return message
 
-    async def msg_assign_task(self, user: User, e_mail: str, end_datetime: datetime, description: str):
-        """Формирование сообщения пользователю о назначении задачи."""
-        # тема сообщения
-        subject = f'Задача от {user.username}.'
-        # сообщение
-        message = (f'\n\nВам назначена задача:\n'
-                   f'Описание: {description}\n'
-                   f'Выполнить до: {end_datetime.date()}')
+    async def msg_assign_task(
+            self,
+            user: User,
+            e_mails: list,
+            end_datetime: datetime,
+            description: str
+    ):
+        """Отправка сообщения пользователю о назначении задачи."""
+        for e_mail in e_mails:
+            subject = f'Задача от {user.username}.'
+            message = (
+                f'\n\nВам назначена задача:\n'
+                f'Описание: {description}\n'
+                f'Выполнить до: {end_datetime.date()}'
+            )
 
-        message = await self._message_generation(
-            subject=subject,
-            msg=message
-        )
-        return send_email.delay(
-            e_mail=e_mail,
-            msg=message,
-        )
+            message = await self._message_generation(
+                subject=subject,
+                msg=message
+            )
+            send_email.delay(
+                e_mail=e_mail,
+                msg=message,
+            )
 
     async def msg_submit(self, client):
         """Отправка сообщений 'оставить заявку'."""

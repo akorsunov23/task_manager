@@ -46,13 +46,13 @@ class TaskUser(Base):
 
     def __repr__(self) -> str:
         # return f"Task assigned from {self.appointed} to {self.executor}"
-        return f"Task assigned from"
+        return f"Task assigned from {self.appointed.username} to {self.executor.username}"
 
     def to_read_model(self):
         return AssignTaskSchema(
             id=self.id,
             start_datetime=self.start_datetime,
-            end_datetime=self.end_datetime,
+            end_datetime=self.end_datetime.date(),
             execution_datetime=self.execution_datetime,
             execution_status=self.execution_status,
             appointed=self.appointed.to_read_model(),

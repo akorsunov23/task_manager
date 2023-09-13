@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Union
 
 from pydantic import BaseModel
 
@@ -13,7 +13,7 @@ class AssignTaskSchema(BaseModel):
     id: int
     start_datetime: datetime
     end_datetime: datetime
-    execution_datetime: datetime
+    execution_datetime: Union[datetime, None]
     execution_status: bool
     appointed: UserSchema
     executor: UserSchema

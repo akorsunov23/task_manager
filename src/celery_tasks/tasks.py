@@ -20,8 +20,8 @@ def send_email(
             server.starttls()
             server.login(SMTP_USERNAME, SMTP_PASSWORD)
             server.sendmail(
-                from_addr=e_mail,
-                to_addrs=SMTP_USERNAME,
+                from_addr=SMTP_USERNAME,
+                to_addrs=e_mail,
                 msg=msg
             )
         return True
