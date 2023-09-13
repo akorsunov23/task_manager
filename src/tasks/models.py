@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
 from src.core.database import Base
-from src.manager.schemas import TaskSchema
+from src.tasks.schemas import TaskSchema
 
 
 class Task(Base):

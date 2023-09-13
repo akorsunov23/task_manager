@@ -1,5 +1,5 @@
-from src.manager.repository import TaskRepository
-from src.manager.services import TaskService
+from src.tasks.repository import TaskRepository
+from src.tasks.services import TaskService
 
 
 def task_service():

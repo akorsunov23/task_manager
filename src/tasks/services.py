@@ -1,4 +1,4 @@
-from src.manager.repository import TaskRepository
+from src.tasks.repository import TaskRepository
 
 
 class TaskService:

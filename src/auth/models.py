@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 
 from src.core.database import Base
 from src.auth.schemas import UserSchema, UserTypeEnum
-from src.manager.models import Task
+from src.tasks.models import Task
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):

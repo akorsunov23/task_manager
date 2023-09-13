@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from src.auth.routers import auth_app
-from src.manager.routers import task_app
+from src.tasks.routers import task_app
 
 app = FastAPI(title="Task manger")
 

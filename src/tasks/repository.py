@@ -1,4 +1,4 @@
-from src.manager.models import Task
+from src.tasks.models import Task
 from src.utils.repository import SQLAlchemyRepository
 
 

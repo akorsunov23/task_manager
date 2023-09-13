@@ -5,9 +5,9 @@ from sqlalchemy.exc import IntegrityError
 
 from src.auth.models import User
 from src.auth.routers import current_superuser
-from src.manager import schemas
-from src.manager.dependencies import task_service
-from src.manager.services import TaskService
+from src.tasks import schemas
+from src.tasks.dependencies import task_service
+from src.tasks.services import TaskService
 
 task_app = APIRouter(prefix="/task", tags=["CRUD Task"])
 
