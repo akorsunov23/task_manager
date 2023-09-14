@@ -8,7 +8,7 @@ def assign_task_service():
     return AssignTaskService(AssignTaskRepository)
 
 
-async def service_send_email():
+def service_send_email():
     """Зависимость сервиса отправки сообщений."""
 
     return SendEmailService()

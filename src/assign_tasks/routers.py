@@ -6,13 +6,12 @@ from sqlalchemy.exc import IntegrityError
 from src.assign_tasks import schemas
 from src.assign_tasks.dependencies import assign_task_service, service_send_email
 from src.assign_tasks.services import AssignTaskService, SendEmailService
+from src.auth.dependencies import user_service
 from src.auth.models import User
 from src.auth.routers import current_user
+from src.auth.services import UserService
 from src.tasks.dependencies import task_service
 from src.tasks.services import TaskService
-from src.auth.services import UserService
-from src.auth.dependencies import user_service
-
 
 assign_task_app = APIRouter(
     tags=["Assignment of tasks"],
@@ -86,4 +85,4 @@ async def assign_task_user_update(
         assign_task_id=assign_task_id,
         user_id=user.id
     )
-    return {'msg': 'Задача успешно обновлена.'}
+    return {'msg': 'Задача успешно выполнена.'}

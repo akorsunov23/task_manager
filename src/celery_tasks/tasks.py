@@ -10,20 +10,15 @@ from src.core.config import (
 
 
 @celery.task
-def send_email(
-        e_mail,
-        msg,
-) -> bool:
+def send_email(e_mail: str, msg: str) -> bool:
     """Отправка сообщения в фоновом режиме"""
-    try:
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls()
-            server.login(SMTP_USERNAME, SMTP_PASSWORD)
-            server.sendmail(
-                from_addr=SMTP_USERNAME,
-                to_addrs=e_mail,
-                msg=msg
-            )
-        return True
-    except Exception as ex:
-        return False
+
+    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+        server.starttls()
+        server.login(SMTP_USERNAME, SMTP_PASSWORD)
+        server.sendmail(
+            from_addr=SMTP_USERNAME,
+            to_addrs=e_mail,
+            msg=msg
+        )
+    return True

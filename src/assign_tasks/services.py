@@ -30,7 +30,7 @@ class AssignTaskService:
                     task_id=data.task_id
                 )
             )
-        await self._task_repo.create_all(objects=objects)
+        await self._task_repo.create_all(obj=objects)
 
     async def get_tasks_all(self, data: dict) -> list:
         """Получение всех задач."""
@@ -100,39 +100,17 @@ class SendEmailService:
                 msg=message,
             )
 
-    async def msg_submit(self, client):
-        """Отправка сообщений 'оставить заявку'."""
-        # тема сообщения администратору
-        subject = 'Новая заявка от <ELEMINT>'
-        # тема сообщения клиенты
-        subject_response = 'Спасибо за обращение в <ELEMINT>'
-        # сообщение администратору
-        message_text = f'\n\nПолучена заявка от: \n\n' \
-                       f'Имя: {client.first_name}\n' \
-                       f'Фамилия: {client.last_name}\n' \
-                       f'E-mail: {client.e_mail}\n'
-        # ответ клиенту
-        message_response = f'{client.first_name} Ваш запрос отправлен. '\
-                           f'Спасибо. ' \
-                           f'\n\nМы свяжемся с вами в самое ближайшее время.'
+    async def msg_overdue_task(self, data: list):
+        """Отправка сообщения пользователю о просроченной задаче."""
+        for e_mail, start_datetime in data:
+            subject = f'Просроченная задача.'
+            message = f'\n\n У Вас просроченная задача от {start_datetime.date()}'
 
-        if client.phone_number:
-            message_text += f'Номер телефона: {client.phone_number}\n'
-        if client.name_organization:
-            message_text += f'Организация: {client.name_organization}\n'
-        if client.TIN:
-            message_text += f'ИНН: {client.TIN}\n'
-
-        subject_list = [subject, subject_response, ]
-        msg_list = [message_text, message_response, ]
-
-        message, message_client = await self._message_generation(
-            e_mail=client.e_mail,
-            subject=subject_list,
-            msg=msg_list
-        )
-        return send_email.delay(
-            e_mail=client.e_mail,
-            msg=message,
-            msg_client=message_client
-        )
+            message = await self._message_generation(
+                subject=subject,
+                msg=message
+            )
+            send_email.delay(
+                e_mail=e_mail,
+                msg=message,
+            )

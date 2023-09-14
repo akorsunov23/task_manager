@@ -98,11 +98,11 @@ class SQLAlchemyRepository(AbstractRepository):
             await session.delete(obj)
             await session.commit()
 
-    async def create_all(self, objects: list):
+    async def create_all(self, obj: list):
         """
         Массовое добавление объектов.
-        :param objects: Список объектов
+        :param obj: Список объектов
         """
         async with async_session_maker() as session:
-            session.add_all(objects)
+            session.add_all(obj)
             await session.commit()
