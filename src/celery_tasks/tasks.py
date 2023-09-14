@@ -16,9 +16,5 @@ def send_email(e_mail: str, msg: str) -> bool:
     with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
         server.starttls()
         server.login(SMTP_USERNAME, SMTP_PASSWORD)
-        server.sendmail(
-            from_addr=SMTP_USERNAME,
-            to_addrs=e_mail,
-            msg=msg
-        )
+        server.sendmail(from_addr=SMTP_USERNAME, to_addrs=e_mail, msg=msg)
     return True

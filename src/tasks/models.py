@@ -16,13 +16,19 @@ class Task(Base):
     title = Column(String, unique=False, index=True, nullable=False)
     description = Column(String(500), nullable=False)
     created_on = Column(DateTime, default=datetime.utcnow)
-    updated_on = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_on = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
     owner_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"))
 
     # Связь с таблицей пользователя
     owner = relationship("User", back_populates="task", lazy="selectin")
     # Связь с таблицей постановки задачи
-    task_user = relationship("TaskUser", back_populates="task", lazy="selectin")
+    task_user = relationship(
+        "TaskUser",
+        back_populates="task",
+        lazy="selectin"
+    )
 
     def __repr__(self) -> str:
         return f"Task {self.id}: owner by - {self.owner}"

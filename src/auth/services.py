@@ -22,6 +22,6 @@ class UserService:
         """Получение списка пользовательской почты."""
         users_email: list = []
         for user_id in users_id:
-            user = await self._user_repo.get_one(data={'id': user_id})
+            user = await self._user_repo.get_one(data={"id": user_id})
             users_email.append(user.email)
         return users_email

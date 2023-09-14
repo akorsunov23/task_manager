@@ -15,7 +15,7 @@ app.include_router(task_app)
 app.include_router(assign_task_app)
 
 
-@app.on_event('startup')
+@app.on_event("startup")
 def on_startup():
     """При старте приложения, запускает планировщика в отдельном процессе."""
     scheduler_process = Process(target=startup_schedule, daemon=True)
@@ -23,4 +23,9 @@ def on_startup():
 
 
 if __name__ == "__main__":
-    uvicorn.run("src.main:app", reload=True, host="127.0.0.1", log_level="info")
+    uvicorn.run(
+        "src.main:app",
+        reload=True,
+        host="127.0.0.1",
+        log_level="info"
+    )

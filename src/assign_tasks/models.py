@@ -1,12 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import (
-    Column,
-    Integer,
-    DateTime,
-    ForeignKey,
-    Boolean
-)
+from sqlalchemy import Column, Integer, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
 from src.core.database import Base
@@ -32,21 +26,23 @@ class TaskUser(Base):
         "User",
         back_populates="appointed_task",
         lazy="selectin",
-        foreign_keys="TaskUser.appointed_id"
+        foreign_keys="TaskUser.appointed_id",
     )
     executor = relationship(
         "User",
         back_populates="executor_task",
         lazy="selectin",
-        foreign_keys="TaskUser.executor_id"
+        foreign_keys="TaskUser.executor_id",
     )
 
     # Связь с таблицей задач
     task = relationship("Task", back_populates="task_user", lazy="selectin")
 
     def __repr__(self) -> str:
-        # return f"Task assigned from {self.appointed} to {self.executor}"
-        return f"Task assigned from {self.appointed.username} to {self.executor.username}"
+        return (
+            f"Task assigned from {self.appointed.username} "
+            f"to {self.executor.username}"
+        )
 
     def to_read_model(self):
         return AssignTaskSchema(
@@ -57,5 +53,5 @@ class TaskUser(Base):
             execution_status=self.execution_status,
             appointed=self.appointed.to_read_model(),
             executor=self.executor.to_read_model(),
-            task=self.task.to_read_model()
+            task=self.task.to_read_model(),
         )

@@ -75,11 +75,7 @@ async def read_tasks_all(
     :param user: Текущий пользователь.
     """
 
-    tasks = await task_serv.get_all_task(
-        data={
-            "owner_id": user.id
-        }
-    )
+    tasks = await task_serv.get_all_task(data={"owner_id": user.id})
     return tasks
 
 
@@ -126,7 +122,6 @@ async def delete_task(
     task_serv: Annotated[TaskService, Depends(task_service)],
     user: User = Depends(current_user),
 ) -> dict:
-
     """
     Удаление задачи.
     :param task_id: ID задачи для удаления.

@@ -3,6 +3,6 @@ from src.utils.repository import SQLAlchemyRepository
 
 
 class UserRepository(SQLAlchemyRepository):
-    """Репозиторий пользователей. """
+    """Репозиторий пользователей."""
 
     model = User

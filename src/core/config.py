@@ -43,3 +43,6 @@ ADMIN_TYPE = os.getenv("ADMIN_TYPE")
 REDIS_HOST = os.getenv("REDIS_HOST")
 REDIS_PORT = os.getenv("REDIS_PORT")
 REDIS_URI = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+
+# время уведомления
+NOTICE_TIME = os.getenv("NOTICE_TIME")

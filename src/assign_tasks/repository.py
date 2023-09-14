@@ -3,6 +3,6 @@ from src.utils.repository import SQLAlchemyRepository
 
 
 class AssignTaskRepository(SQLAlchemyRepository):
-    """Репозиторий над назначениями задач. """
+    """Репозиторий над назначениями задач."""
 
     model = TaskUser

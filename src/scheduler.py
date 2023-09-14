@@ -3,12 +3,13 @@ import asyncio
 import aioschedule
 
 from src.assign_tasks.utils import get_overdue_tasks
+from src.core.config import NOTICE_TIME
 
 
 async def schedule():
     """Планировщик задач. Запускает функция в заданное время."""
 
-    aioschedule.every().day.at('09:00').do(job_func=get_overdue_tasks)
+    aioschedule.every().day.at(NOTICE_TIME).do(job_func=get_overdue_tasks)
     while True:
         await aioschedule.run_pending()
         await asyncio.sleep(1)
