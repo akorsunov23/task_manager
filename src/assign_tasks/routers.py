@@ -72,7 +72,9 @@ async def assign_task_users_get(
 ) -> List[schemas.AssignTaskSchema]:
     """Получение своих задач."""
     tasks = await assign_task_serv.get_tasks_all(data={"executor": user})
-    return tasks
+    if len(tasks) > 0:
+        return tasks
+    raise HTTPException(status_code=404, detail="Задач не найдено")
 
 
 @assign_task_app.patch(
