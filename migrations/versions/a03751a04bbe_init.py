@@ -37,7 +37,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_user_id'), 'user', ['id'], unique=False)
     op.create_table('task',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('title', sa.String(), nullable=False),
+    sa.Column('title', sa.String(), nullable=False, unique=True),
     sa.Column('description', sa.String(length=500), nullable=False),
     sa.Column('created_on', sa.DateTime(), nullable=True),
     sa.Column('updated_on', sa.DateTime(), nullable=True),

@@ -13,7 +13,7 @@ class Task(Base):
     __tablename__ = "task"
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    title = Column(String, unique=False, index=True, nullable=False)
+    title = Column(String, unique=True, index=True, nullable=False)
     description = Column(String(500), nullable=False)
     created_on = Column(DateTime, default=datetime.utcnow)
     updated_on = Column(
