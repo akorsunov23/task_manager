@@ -1,0 +1,94 @@
+version: '3.9'
+services:
+
+  db:
+    container_name: task_manager_db
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    image: postgres:14-alpine
+    networks:
+      - network
+    ports:
+      - "5434:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+  migration:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.migration
+    container_name: task_manager_migration
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - network
+
+  redis:
+    restart: unless-stopped
+    image: redis:7.0.5-alpine
+    expose:
+      - ${REDIS_PORT}
+    networks:
+      - network
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend
+    container_name: task_manager_backend
+    depends_on:
+      - db
+      - migration
+      - redis
+    env_file:
+      - .env
+    networks:
+      - network
+    ports:
+      - "8000:8000"
+
+  celery:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend
+    container_name: task_manager_worker
+    env_file:
+      - .env
+    command: ["./celery.sh", "celery"]
+    networks:
+      - network
+    depends_on:
+      - backend
+      - db
+      - migration
+      - redis
+
+  flower:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend
+    container_name: task_manager_flower
+    links:
+      - celery
+    env_file:
+      - .env
+    command: ["./celery.sh", "flower"]
+    networks:
+      - network
+    depends_on:
+      - celery
+    ports:
+      - "5555:5555"
+
+networks:
+  network:
+    driver: bridge
+
+volumes:
+  db_data:
