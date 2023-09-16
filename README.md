@@ -35,6 +35,7 @@ pip install -r req.txt
 ```angular2html
 source venv/bin/activate
 ```
+- Изменить данные в .env на локальные хосты
 - Выполнить миграции в БД (не забываем добавить в .env данные для тестовой базы данных);
 ```angular2html
 alembic --config alembic_test.ini upgrade head
