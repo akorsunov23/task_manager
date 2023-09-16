@@ -23,9 +23,12 @@ docker compose -f docker/docker-compose.yml exec backend python createsuperuser.
 ```
 
 --# ДЛЯ ЗАПУСКА ТЕСТОВ #--
-- Создать виртуальное окружение и установить зависимости;
+- Создать виртуальное окружение;
 ```angular2html
 python3 -m venv venv
+```
+- Установить зависимости:
+```angular2html  
 pip install -r req.txt
 ```
 - Активировать виртуальное окружение;
@@ -36,9 +39,12 @@ source venv/bin/activate
 ```angular2html
 alembic --config alembic_test.ini upgrade head
 ```
-- Запустить Redis и Celery в разных терминалах;
+- Запустить Redis;
 ```angular2html
 redis-server
+```
+- Запустить Celery;
+```angular2html
 celery --app src.celery_tasks.tasks worker -l INFO
 ```
 - Выполнить тесты;
