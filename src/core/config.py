@@ -31,7 +31,8 @@ password_test = os.getenv("DB_PASSWORD_TEST")
 host_test = os.getenv("DB_HOST_TEST")
 port_test = os.getenv("DB_PORT_TEST")
 database_test = os.getenv("DB_NAME_TEST")
-db_uri_test = f"{user_test}:{password_test}@{host_test}:{port_test}/{database_test}"
+db_uri_test = f"{user_test}:{password_test}@{host_test}" \
+               f":{port_test}/{database_test}"
 async_db_engine_settings_test = f"postgresql+asyncpg://{db_uri_test}" \
                            f"?async_fallback=True"
 
