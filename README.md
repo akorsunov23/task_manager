@@ -12,7 +12,7 @@ git clone https://github.com/akorsunov23/task_manager.git
 ````angular2html
 cd task_manager/
 ````
-- Переименовать .env.template в .env и заполнить по примеру, а также копировать данный файл в /docker;
+- Переименовать .env.template в .env и заполнить по примеру, а также и в /docker;
 - Запустить сборку и запуск контейнера;
 ```angular2html
 docker compose -f docker/docker-compose.yml up --build
@@ -35,7 +35,7 @@ pip install -r req.txt
 ```angular2html
 source venv/bin/activate
 ```
-- Изменить данные в .env на локальные хосты
+- Изменить данные в .env проекта на локальные хосты
 - Выполнить миграции в БД (не забываем добавить в .env данные для тестовой базы данных);
 ```angular2html
 alembic --config alembic_test.ini upgrade head

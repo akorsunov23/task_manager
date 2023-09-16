@@ -4,9 +4,9 @@ services:
   db:
     container_name: task_manager_db
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     image: postgres:14-alpine
     networks:
       - network
@@ -15,7 +15,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     env_file:
-      - .env
+      - ../.env
 
   migration:
     build:
@@ -25,7 +25,7 @@ services:
     depends_on:
       - db
     env_file:
-      - .env
+      - ../.env
     networks:
       - network
 
@@ -33,7 +33,7 @@ services:
     restart: unless-stopped
     image: redis:7.0.5-alpine
     expose:
-      - ${REDIS_PORT}
+      - 6379
     networks:
       - network
 
@@ -47,7 +47,7 @@ services:
       - migration
       - redis
     env_file:
-      - .env
+      - ../.env
     networks:
       - network
     ports:
@@ -59,7 +59,7 @@ services:
       dockerfile: docker/Dockerfile.backend
     container_name: task_manager_worker
     env_file:
-      - .env
+      - ../.env
     command: ["./celery.sh", "celery"]
     networks:
       - network
@@ -77,7 +77,7 @@ services:
     links:
       - celery
     env_file:
-      - .env
+      - ../.env
     command: ["./celery.sh", "flower"]
     networks:
       - network
