@@ -28,3 +28,9 @@ class TaskUpdateSchema(BaseModel):
     id: int
     title: str
     description: str
+
+
+class ResponseTaskSchema(BaseModel):
+    """Схема успешного ответа на запросы."""
+
+    msg: str

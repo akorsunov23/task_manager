@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.exc import IntegrityError
@@ -22,7 +22,10 @@ assign_task_app = APIRouter(
 )
 
 
-@assign_task_app.post("/create")
+@assign_task_app.post(
+    "/create",
+    response_model=schemas.ResponseAssignTaskSchema
+)
 async def assign_task_users(
     data: schemas.AssignTaskCreateSchema,
     assign_task_serv: Annotated[
@@ -33,7 +36,7 @@ async def assign_task_users(
     user_serv: Annotated[UserService, Depends(user_service)],
     email_serv: Annotated[SendEmailService, Depends(service_send_email)],
     user: User = Depends(current_user),
-):
+) -> schemas.ResponseAssignTaskSchema:
     """Назначение задачи пользователям."""
     try:
         task = await task_serv.get_one_task(
@@ -50,7 +53,7 @@ async def assign_task_users(
                 end_datetime=data.end_datetime,
                 description=task.description,
             )
-            return {"msg": "Задача назначена."}
+            return schemas.ResponseAssignTaskSchema(msg="Задача назначена.")
         raise HTTPException(
             status_code=404,
             detail="Задача не является вашей или данные не верные."
@@ -66,13 +69,16 @@ async def assign_task_users_get(
         Depends(assign_task_service)
     ],
     user: User = Depends(current_user),
-):
+) -> List[schemas.AssignTaskSchema]:
     """Получение своих задач."""
     tasks = await assign_task_serv.get_tasks_all(data={"executor": user})
     return tasks
 
 
-@assign_task_app.patch("/update_task")
+@assign_task_app.patch(
+    "/update_task",
+    response_model=schemas.ResponseAssignTaskSchema
+)
 async def assign_task_user_update(
     assign_task_id: int,
     assign_task_serv: Annotated[
@@ -80,9 +86,9 @@ async def assign_task_user_update(
         Depends(assign_task_service)
     ],
     user: User = Depends(current_user),
-):
+) -> schemas.ResponseAssignTaskSchema:
     """Обновление поставленной задачи."""
     await assign_task_serv.update_assign_task(
         assign_task_id=assign_task_id, user_id=user.id
     )
-    return {"msg": "Задача успешно выполнена."}
+    return schemas.ResponseAssignTaskSchema(msg="Задача успешно выполнена.")

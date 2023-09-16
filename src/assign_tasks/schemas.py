@@ -9,7 +9,6 @@ from src.tasks.schemas import TaskSchema
 
 class AssignTaskSchema(BaseModel):
     """Схема модели постановки задач."""
-
     id: int
     start_datetime: datetime
     end_datetime: datetime
@@ -22,7 +21,11 @@ class AssignTaskSchema(BaseModel):
 
 class AssignTaskCreateSchema(BaseModel):
     """Схема назначения задачи."""
-
     users_id: List[int]
     task_id: int
     end_datetime: datetime
+
+
+class ResponseAssignTaskSchema(BaseModel):
+    """Схема успешного ответа на запросы."""
+    msg: str

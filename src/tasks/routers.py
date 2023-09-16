@@ -12,12 +12,15 @@ from src.tasks.services import TaskService
 task_app = APIRouter(prefix="/task", tags=["CRUD Task"])
 
 
-@task_app.post("/create")
+@task_app.post(
+    "/create",
+    response_model=schemas.ResponseTaskSchema
+)
 async def create_task(
     data: schemas.TaskCreateSchema,
     task_serv: Annotated[TaskService, Depends(task_service)],
     user: User = Depends(current_user),
-) -> dict:
+) -> schemas.ResponseTaskSchema:
     """
     Добавление задачи в БД.
     :param data: Схема добавления задачи.
@@ -33,14 +36,20 @@ async def create_task(
                 "owner_id": user.id,
             }
         )
-        return {"msg": f"Задача добавлена, ID:{task}"}
+        return schemas.ResponseTaskSchema(
+            msg=f"Задача добавлена, ID:{task}"
+        )
     except IntegrityError:
         raise HTTPException(
-            status_code=400, detail="Задача с таким заголовком уже добавлена."
+            status_code=400,
+            detail="Задача с таким заголовком уже добавлена."
         )
 
 
-@task_app.get("/read_one")
+@task_app.get(
+    "/read_one",
+    response_model=schemas.TaskSchema
+)
 async def read_task_one(
     task_id: int,
     task_serv: Annotated[TaskService, Depends(task_service)],
@@ -76,15 +85,20 @@ async def read_tasks_all(
     """
 
     tasks = await task_serv.get_all_task(data={"owner_id": user.id})
-    return tasks
+    if len(tasks) > 0:
+        return tasks
+    raise HTTPException(status_code=404, detail="Задач не добавлено.")
 
 
-@task_app.put("/update")
+@task_app.put(
+    "/update",
+    response_model=schemas.ResponseTaskSchema
+)
 async def update_task(
     data: schemas.TaskUpdateSchema,
     task_serv: Annotated[TaskService, Depends(task_service)],
     user: User = Depends(current_user),
-) -> dict:
+) -> schemas.ResponseTaskSchema:
     """
     Обновление задачи.
     :param data: Данные для обновления задачи.
@@ -107,7 +121,9 @@ async def update_task(
                     "description": data.description
                 }
             )
-            return {"msg": f"Задача ID:{task.id} успешно обновлена"}
+            return schemas.ResponseTaskSchema(
+                msg=f"Задача ID:{task.id} успешно обновлена"
+            )
         except IntegrityError:
             raise HTTPException(
                 status_code=400,
@@ -116,12 +132,15 @@ async def update_task(
     raise HTTPException(status_code=404, detail="Задачи не существует")
 
 
-@task_app.delete("/delete")
+@task_app.delete(
+    "/delete",
+    response_model=schemas.ResponseTaskSchema
+)
 async def delete_task(
     task_id: int,
     task_serv: Annotated[TaskService, Depends(task_service)],
     user: User = Depends(current_user),
-) -> dict:
+) -> schemas.ResponseTaskSchema:
     """
     Удаление задачи.
     :param task_id: ID задачи для удаления.
@@ -138,6 +157,8 @@ async def delete_task(
         await task_serv.delete_task(
             obj=task,
         )
-        return {"msg": f"Задача ID:{task.id} успешно удалена."}
+        return schemas.ResponseTaskSchema(
+            msg=f"Задача ID:{task.id} успешно удалена."
+        )
 
     raise HTTPException(status_code=404, detail="Задачи не существует")
