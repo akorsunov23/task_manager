@@ -47,7 +47,6 @@ SMTP_SENDER = os.getenv("SMTP_SENDER")
 ADMIN_USERNAME = os.getenv("ADMIN_USERNAME")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
-ADMIN_TYPE = os.getenv("ADMIN_TYPE")
 
 # Redis
 REDIS_HOST = os.getenv("REDIS_HOST")
