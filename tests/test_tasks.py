@@ -38,7 +38,7 @@ async def test_task_create_success(client: AsyncClient):
     assert response.status_code == 200
 
 
-async def test_create_task_to_database(client: AsyncClient):
+async def test_create_task_to_database():
     """Тест на добавленную запись в БД."""
     async with async_session_maker_test() as session:
         query = select(Task)
@@ -83,7 +83,7 @@ async def test_task_update_success(client: AsyncClient):
     assert response.status_code == 200
 
 
-async def test_update_task_to_database(client: AsyncClient):
+async def test_update_task_to_database():
     """Тест на обновленную запись в БД."""
     async with async_session_maker_test() as session:
         query = select(Task).filter_by(id=ID_TASK)
@@ -119,7 +119,7 @@ async def test_task_delete_success(client: AsyncClient):
     assert response.status_code == 200
 
 
-async def test_empty_task_to_database(client: AsyncClient):
+async def test_empty_task_to_database():
     """Тест на пустую БД."""
     async with async_session_maker_test() as session:
         query = select(Task).filter_by(id=ID_TASK)

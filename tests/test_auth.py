@@ -25,7 +25,7 @@ async def test_register_user_success(client: AsyncClient):
     assert response.status_code == 201
 
 
-async def test_create_user_to_database(client: AsyncClient):
+async def test_create_user_to_database():
     """Тест на добавленную запись в БД."""
     async with async_session_maker_test() as session:
         query = select(User)
@@ -100,7 +100,7 @@ async def test_update_data_user_success(client: AsyncClient):
     assert response.status_code == 200
 
 
-async def test_update_user_to_database(client: AsyncClient):
+async def test_update_user_to_database():
     """Тест на обновление пользователя в БД."""
     async with async_session_maker_test() as session:
         query = select(User)
