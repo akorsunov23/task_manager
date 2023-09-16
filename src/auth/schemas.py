@@ -49,7 +49,7 @@ class UserCreate(schemas.BaseUserCreate):
 class UserUpdate(schemas.BaseUserUpdate):
     """Схема обновления пользователя."""
 
-    password: Optional[str] = None
+    username: Optional[str] = None
     email: Optional[EmailStr] = None
     is_active: Optional[bool] = None
     is_superuser: Optional[bool] = None

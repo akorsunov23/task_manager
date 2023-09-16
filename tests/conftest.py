@@ -18,12 +18,15 @@ from src.main import app
 from src.tasks.models import Task
 
 engine_test = create_async_engine(async_db_engine_settings_test)
-async_session_maker = async_sessionmaker(engine_test, expire_on_commit=False)
+async_session_maker_test = async_sessionmaker(
+    engine_test,
+    expire_on_commit=False
+)
 
 
 async def get_async_session_test() -> AsyncGenerator[AsyncSession, None]:
     """Сессия тестовой базы данных."""
-    async with async_session_maker() as session:
+    async with async_session_maker_test() as session:
         yield session
 
 
@@ -34,7 +37,7 @@ app.dependency_overrides[get_async_session] = get_async_session_test
 async def run_database():
     """Отчистка БД после проведения тестов."""
     yield
-    async with async_session_maker() as session:
+    async with async_session_maker_test() as session:
         user_base = select(User)
         result_user = await session.scalar(user_base)
         if result_user:
@@ -61,7 +64,7 @@ def event_loop(request):
     loop.close()
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 async def client() -> AsyncGenerator[AsyncClient, None]:
     """Получение асинхронного клиента."""
     async with AsyncClient(app=app, base_url="http://test") as client:
