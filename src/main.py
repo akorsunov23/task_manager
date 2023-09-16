@@ -8,7 +8,7 @@ from src.auth.routers import auth_app
 from src.scheduler import startup_schedule
 from src.tasks.routers import task_app
 
-app = FastAPI(title="Task manger")
+app = FastAPI(title="Task manager")
 
 app.include_router(auth_app)
 app.include_router(task_app)
